@@ -1,0 +1,16 @@
+package br.edu.ifsp.scl.currencyconverter.viewmodel
+
+import android.content.Context
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import br.edu.ifsp.scl.currencyconverter.model.CurrencyList
+import br.edu.ifsp.scl.currencyconverter.model.CurrencyListItem
+import br.edu.ifsp.scl.currencyconverter.model.CurrencyTypeService
+
+class CurrencyTypeViewModel(context: Context): ViewModel() {
+    private val model = CurrencyTypeService(context)
+
+    fun buscaMoedas(): MutableLiveData<CurrencyList> {
+        return model.getCurrency()
+    }
+}

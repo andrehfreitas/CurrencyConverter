@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CurrencyConverter</string>
+    <string name="currency_converter_sdm">Currency Converter SDM</string>
+</resources>
