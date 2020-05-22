@@ -3,29 +3,28 @@ package br.edu.ifsp.scl.currencyconverter.model
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import br.edu.ifsp.scl.currencyconverter.R
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.google.gson.Gson
-import com.google.gson.JsonObject
+import com.google.gson.GsonBuilder
 import org.json.JSONObject
 
 class CurrencyTypeService(val context: Context) {
     /* Fila de requisições Volley */
     private val filaRequisicoesVolley = Volley.newRequestQueue(context)
-    private val gson = Gson()
 
+    // Aqui estamos registrando a classe de desserialização personalizada que criamos
+    // Poderíamos usar um CustomDesserializer, mas isso é outro assunto.
+    private val gson = GsonBuilder().registerTypeAdapter(ListaMoedas::class.java, ListaMoedasTypeAdapter().nullSafe()).create()
 
     /* Acessa o WebService e retorna um LiveData que será preenchido */
-    fun getCurrency(): MutableLiveData<CurrencyList> {
+    fun getCurrency(): MutableLiveData<ListaMoedas> {
 
         /* Montando URL de consulta ao WebService */
         val url = "${CurrencyTypeApi.URL_BASE}${CurrencyTypeApi.END_POINT}"
 
         /* Montando requisição */
-        val currencyListLd = MutableLiveData<CurrencyList>()
+        val currencyListLd = MutableLiveData<ListaMoedas>()
         val requisicao = buildRequest(url, currencyListLd)
 
         /* Adiciona a requisição na fila de requisições Volley */
@@ -34,14 +33,15 @@ class CurrencyTypeService(val context: Context) {
         return currencyListLd
     }
 
-    private fun buildRequest(url: String, currencyListLd: MutableLiveData<CurrencyList>): JsonObjectRequest {
+    private fun buildRequest(url: String, listaMoedasLd: MutableLiveData<ListaMoedas>): JsonObjectRequest {
         return object: JsonObjectRequest(
             Method.GET,
             url,
             null,
-            { currencyList: JSONObject? ->
-                currencyList?.let {
-                    currencyListLd.value = gson.fromJson(currencyList.toString(), CurrencyList::class.java)
+            { currencyJsonResponse: JSONObject? ->
+                currencyJsonResponse?.let {
+                    // Aqui a função read do ListaMoedasTypeAdapter é chamado para converter o JSON num ListaMoedas
+                    listaMoedasLd.value = gson.fromJson(currencyJsonResponse.toString(), ListaMoedas::class.java)
                 }
             },
             { error: VolleyError? -> Log.e("CurrencyConverter", "${error?.message}")}

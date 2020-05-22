@@ -31,10 +31,12 @@ class MainActivity : AppCompatActivity() {
         spnMoedaDestino.adapter = moedaAdapter
         viewModelType.buscaMoedas().observe(
             this,
-            Observer { currencyList ->
-                currencyList.list.forEach { currencyListItem ->
-                    if (currencyListItem.moeda.isNotEmpty()) {
-                        moedaAdapter.add(currencyListItem.moeda)
+            Observer { listaMoedas ->
+                if (listaMoedas.moedas.isNotEmpty()) {
+                    // Uma vez que temos o HashMap de siglas e descrições das moedas, pegamos somente
+                    // as siglas para popular o spinner
+                    listaMoedas.moedas.keys.sorted().forEach { siglaMoeda ->
+                        moedaAdapter.add(siglaMoeda)
                     }
                 }
             }
