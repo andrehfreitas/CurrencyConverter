@@ -26,12 +26,12 @@ class ListaMoedasTypeAdapter: TypeAdapter<ListaMoedas>() {
                 val nomeCampo = if (jsonToken == JsonToken.NAME) reader.nextName() else ""
 
                 // Pega o valor do campo status no objeto JSON
-                if (nomeCampo.equals("status")) {
+                if (nomeCampo == "status") {
                     jsonToken = reader.peek()
                     statusMoeda = reader.nextString()
                 }
 
-                // Currencias não é um vetor, mas um objeto com muitos pares atributo-valor.
+                // Currencies não é um vetor, mas um objeto com muitos pares atributo-valor.
                 // Veja o exemplo de uma das linhas  "BRL": "Brazilian Real"
                 // Vamos pegar todos eles e separar num HashMap.
                 if (nomeCampo == "currencies") {

@@ -22,6 +22,12 @@ class MainActivity : AppCompatActivity() {
         viewModelType = CurrencyTypeViewModel(this)
 
         currencyAdapterInit()
+
+        btnCoverter.setOnClickListener {
+            
+        }
+
+
     }
 
     private fun currencyAdapterInit() {
